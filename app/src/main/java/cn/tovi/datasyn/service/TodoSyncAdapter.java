@@ -4,40 +4,36 @@
  ******************************************************************************/
 package cn.tovi.datasyn.service;
 
-import java.io.IOException;
-import java.util.List;
-
-
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.content.AbstractThreadedSyncAdapter;
 import android.content.ContentProviderClient;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.SyncResult;
 import android.os.Bundle;
 import android.util.Log;
 
-import com.manning.androidhacks.hack023.api.TodoServiceImpl;
 import com.manning.androidhacks.hack023.authenticator.AuthenticatorActivity;
-import com.manning.androidhacks.hack023.dao.TodoDAO;
 import com.manning.androidhacks.hack023.exception.AndroidHacksException;
 import com.manning.androidhacks.hack023.model.Todo;
 import com.manning.androidhacks.hack023.provider.StatusFlag;
+
+import java.io.IOException;
+import java.util.List;
 
 public class TodoSyncAdapter extends AbstractThreadedSyncAdapter {
 
     private static final String TAG = TodoSyncAdapter.class
             .getCanonicalName();
-    private final ContentResolver mContentResolver;
+    //    private final ContentResolver mContentResolver;
     private AccountManager mAccountManager;
-    private final static TodoDAO mTodoDAO = TodoDAO.getInstance();
+//    private final static TodoDAO mTodoDAO = TodoDAO.getInstance();
 
     public TodoSyncAdapter(Context context, boolean autoInitialize) {
         super(context, autoInitialize);
-        mContentResolver = context.getContentResolver();
+//        mContentResolver = context.getContentResolver();
         mAccountManager = AccountManager.get(context);
     }
 
@@ -115,16 +111,16 @@ public class TodoSyncAdapter extends AbstractThreadedSyncAdapter {
         Log.d(TAG, "Syncing remote deleted lists...");
 
         //获取没有被处理过的（添加、删除、修改之外的）数据
-        List<Todo> localClean = mTodoDAO.getCleanTodos(mContentResolver);
+//        List<Todo> localClean = mTodoDAO.getCleanTodos(mContentResolver);
         //如果服务器没有这个数据，本地也删除
-        for (Todo cleanTodo : localClean) {
-
-            if (!remoteData.contains(cleanTodo)) {
-                Log.d(TAG, "Todo with id " + cleanTodo.getId()
-                        + " has been deleted remotely.");
-                mTodoDAO.forcedDeleteTodo(mContentResolver, cleanTodo.getId());
-            }
-        }
+//        for (Todo cleanTodo : localClean) {
+//
+//            if (!remoteData.contains(cleanTodo)) {
+//                Log.d(TAG, "Todo with id " + cleanTodo.getId()
+//                        + " has been deleted remotely.");
+//                mTodoDAO.forcedDeleteTodo(mContentResolver, cleanTodo.getId());
+//            }
+//        }
     }
 
     /**
@@ -134,21 +130,21 @@ public class TodoSyncAdapter extends AbstractThreadedSyncAdapter {
      */
     protected void syncFromServerToLocalStorage(List<Todo> data) {
         for (Todo todoFromServer : data) {
-            Todo todoInDb = mTodoDAO.isTodoInDb(mContentResolver,
-                    todoFromServer.getId());
+//            Todo todoInDb = mTodoDAO.isTodoInDb(mContentResolver,
+//                    todoFromServer.getId());
 
             //如果服务器的数据，本地不存在，则添加
-            if (todoInDb == null) {
-                Log.d(TAG, "Adding new todo from server: " + todoFromServer);
-                mTodoDAO.addNewTodo(mContentResolver, todoFromServer,
-                        StatusFlag.CLEAN);
-
-            } else
-                // 如果服务器的数据存在，本地的不存在，则通知服务器删除数据
-                if (todoInDb.getStatus() == StatusFlag.CLEAN) {
-                    Log.d(TAG, "Modifying list from server: " + todoInDb);
-                    mTodoDAO.modifyTodoFromServer(mContentResolver, todoFromServer);
-                }
+//            if (todoInDb == null) {
+//                Log.d(TAG, "Adding new todo from server: " + todoFromServer);
+//                mTodoDAO.addNewTodo(mContentResolver, todoFromServer,
+//                        StatusFlag.CLEAN);
+//
+//            } else
+            // 如果服务器的数据存在，本地的不存在，则通知服务器删除数据
+//                if (todoInDb.getStatus() == StatusFlag.CLEAN) {
+//                    Log.d(TAG, "Modifying list from server: " + todoInDb);
+//                    mTodoDAO.modifyTodoFromServer(mContentResolver, todoFromServer);
+//                }
 
         }
     }
